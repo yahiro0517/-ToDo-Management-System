@@ -8,8 +8,11 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.dmm.task.data.entity.Tasks;
 import com.dmm.task.data.repository.TaskRepository;
 
 @Controller
@@ -53,11 +56,14 @@ public class MainController {
 		for(int i = 7; i <= day.lengthOfMonth(); i++) {
 			day = day.plusDays(1);
 			week.add(day);
-			// 土曜日かどうかを判定
+			
+			// 土曜日かどうかを判定			
 			if (w == DayOfWeek.SATURDAY) {
 				month.add(week);
 				week = new ArrayList<>();    // 次週分のリストを用意				
-			}			
+			
+			}
+				
 			// 7. 最終週の翌月分をDayOfWeekの値を使って計算し、6．で生成したリストへ格納し、最後に1．で生成したリストへ格納する
 			day = day.plusDays(w.getValue());    // これでdayには翌月分
 			week.add(day);
@@ -66,6 +72,11 @@ public class MainController {
 		month.add(week);			
 		
 		model.addAttribute("matrix", month);
+		
+		// カレンダーの日付（LocalDate）とタスク情報（Tasks）とをセットでもつためのMultiValueMap
+		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
+		
+		model.addAttribute("tasks", tasks);
 		return "/main";
 		
 	}
