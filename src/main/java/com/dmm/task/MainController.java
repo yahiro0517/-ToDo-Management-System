@@ -46,8 +46,9 @@ public class MainController {
 		
 		// 5. 1日ずつ増やしてLocalDateを求めていき、2．で作成したListへ格納していき、1週間分詰めたら1．のリストへ格納する
 		for(int i = 1; i <= 7; i++) {
-			day = day.plusDays(1);
 			week.add(day);
+			day = day.plusDays(1);
+			
 		}
 		month.add(week);
 		week = new ArrayList<>();    // 次週分のリストを用意
@@ -64,11 +65,17 @@ public class MainController {
 			day = day.plusDays(1);
 		}
 		// 7. 最終週の翌月分をDayOfWeekの値を使って計算し、6．で生成したリストへ格納し、最後に1．で生成したリストへ格納する
-		day = day.plusDays(w.getValue());    // これでdayには翌月分
-		week.add(day);
-		month.add(week);			
+		w = day.getDayOfWeek();   // 6.まででdayを進めているので、この時点でdayには月末が入っている。
+		int nextMonthDays = 7 - w.getValue();    // 1週間分の日数 7 から上記を引くと、来月分の日数になる。
+
+		for(int i = 1; i <= nextMonthDays; i++) {
+			day = day.plusDays(1);
+			week.add(day);
+		}
+		month.add(week);
 		
 		model.addAttribute("matrix", month);
+		model.addAttribute("month", month);
 		
 		// カレンダーの日付（LocalDate）とタスク情報（Tasks）とをセットでもつためのMultiValueMap
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
