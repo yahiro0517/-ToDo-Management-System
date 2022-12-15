@@ -54,21 +54,18 @@ public class MainController {
 		
 		// 6. 2週目以降は単純に1日ずつ日を増やしながらLocalDateを求めてListへ格納していき、土曜日になったら1．のリストへ格納して新しいListを生成する（月末を求めるにはLocalDate#lengthOfMonth()を使う）
 		for(int i = 7; i <= day.lengthOfMonth(); i++) {
-			day = day.plusDays(1);
-			week.add(day);
-			
+			// 曜日取得
+			DayOfWeek w1 = day.getDayOfWeek();
 			// 土曜日かどうかを判定			
-			if (w == DayOfWeek.SATURDAY) {
+			if (w1 == DayOfWeek.SATURDAY) {
 				month.add(week);
-				week = new ArrayList<>();    // 次週分のリストを用意				
-			
+				week = new ArrayList<>();    // 次週分のリストを用意		
 			}
-				
-			// 7. 最終週の翌月分をDayOfWeekの値を使って計算し、6．で生成したリストへ格納し、最後に1．で生成したリストへ格納する
-			day = day.plusDays(w.getValue());    // これでdayには翌月分
-			week.add(day);
-			
+			day = day.plusDays(1);
 		}
+		// 7. 最終週の翌月分をDayOfWeekの値を使って計算し、6．で生成したリストへ格納し、最後に1．で生成したリストへ格納する
+		day = day.plusDays(w.getValue());    // これでdayには翌月分
+		week.add(day);
 		month.add(week);			
 		
 		model.addAttribute("matrix", month);
