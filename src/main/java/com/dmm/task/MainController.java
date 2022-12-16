@@ -2,7 +2,6 @@ package com.dmm.task;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -118,7 +117,7 @@ public class MainController {
 		Tasks task = new Tasks();
 		task.setName(user.getName());
 		task.setTitle(mainForm.getTitle());
-		task.setDate(LocalDateTime.now());
+		task.setDate(mainForm.getDate());
 		task.setText(mainForm.getText());
 
 		repo.save(task);
