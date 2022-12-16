@@ -2,18 +2,25 @@ package com.dmm.task;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import com.dmm.task.data.entity.Tasks;
 import com.dmm.task.data.repository.TaskRepository;
+import com.dmm.task.form.MainForm;
+import com.dmm.task.service.AccountUserDetails;
 
 @Controller
 public class MainController {
@@ -55,6 +62,7 @@ public class MainController {
 		
 		// 6. 2週目以降は単純に1日ずつ日を増やしながらLocalDateを求めてListへ格納していき、土曜日になったら1．のリストへ格納して新しいListを生成する（月末を求めるにはLocalDate#lengthOfMonth()を使う）
 		for(int i = 7; i <= day.lengthOfMonth(); i++) {
+			week.add(day);
 			// 曜日取得
 			DayOfWeek w1 = day.getDayOfWeek();
 			// 土曜日かどうかを判定			
@@ -74,8 +82,15 @@ public class MainController {
 		}
 		month.add(week);
 		
+		
+		
 		model.addAttribute("matrix", month);
-		model.addAttribute("month", month);
+		
+		YearMonth ym =YearMonth.now();
+		// 文字列へ変換
+		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy年 MM月");
+		String ym2 =f.format(ym);
+		model.addAttribute("month", ym2);
 		
 		// カレンダーの日付（LocalDate）とタスク情報（Tasks）とをセットでもつためのMultiValueMap
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
@@ -84,4 +99,31 @@ public class MainController {
 		return "/main";
 		
 	}
+	
+	/**
+	 * タスクの新規作成画面
+	 */
+	@GetMapping("/main/create/{date}")
+	public String create() {
+		
+		return "create";
+	}
+	
+	
+	/**
+	 * タスクの新規作成
+	 */
+	@PostMapping("/main/create")
+	public String createPost(MainForm mainForm, @AuthenticationPrincipal AccountUserDetails user) {
+		Tasks task = new Tasks();
+		task.setName(user.getName());
+		task.setTitle(mainForm.getTitle());
+		task.setDate(LocalDateTime.now());
+		task.setText(mainForm.getText());
+
+		repo.save(task);
+		
+		return "redirect:/main";
+	}
+
 }

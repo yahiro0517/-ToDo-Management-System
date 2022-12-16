@@ -2,6 +2,7 @@ package com.dmm.task;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import com.dmm.task.data.repository.TaskRepository;
 
@@ -11,6 +12,11 @@ public class CreateController {
 	@Autowired
 	private TaskRepository repo;
 	
+	@GetMapping("/create")
+	public String create() {
+	return "create";	
+	}
+	
 	/**
 	 * 投稿を作成。
 	 * @param postForm 送信データ
@@ -19,8 +25,8 @@ public class CreateController {
 	 */
 	
 	/*
-	@PostMapping("/create/create")
-	public String create(@Validated PostForm postForm, BindingResult bindingResult,
+	@PostMapping("/main/create")
+	public String create(@Validated CreatetForm createForm, BindingResult bindingResult,
 			@AuthenticationPrincipal AccountUserDetails user, Model model) {
 		// バリデーションの結果、エラーがあるかどうかチェック
 		if (bindingResult.hasErrors()) {
@@ -28,18 +34,20 @@ public class CreateController {
 			List<Tasks> list = repo.findAll(Sort.by(Sort.Direction.DESC, "id"));
 			model.addAttribute("posts", list);
 			model.addAttribute("postForm", postForm);
-			return "/posts";
+			return "/main/create";
 		}
 
-		Posts post = new Posts();
-		post.setName(user.getName());
-		post.setTitle(postForm.getTitle());
-		post.setText(postForm.getText());
-		post.setDate(LocalDateTime.now());
+		Tasks task = new Tasks();
+		
+		task.setName(user.getName());
+		task.setTitle(postForm.getTitle());
+		task.setText(postForm.getText());
+		task.setDate(LocalDateTime.now());
+		//task.setDone(
 
-		repo.save(post);
+		repo.save(task);
 	{
-		return "create";
+		return "/main/create";
 	}
 	*/
 }
