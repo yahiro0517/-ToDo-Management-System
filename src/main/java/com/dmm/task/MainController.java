@@ -119,6 +119,7 @@ public class MainController {
 		task.setTitle(mainForm.getTitle());
 		task.setDate(mainForm.getDate().atTime(0,0));
 		task.setText(mainForm.getText());
+		task.setDone(mainForm.getDone());
 
 		repo.save(task);
 		
