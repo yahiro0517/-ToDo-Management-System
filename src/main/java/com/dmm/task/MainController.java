@@ -81,10 +81,9 @@ public class MainController {
 		}
 		month.add(week);
 		
-		
-		
 		model.addAttribute("matrix", month);
 		
+		// カレンダー上部の年月表示
 		YearMonth ym =YearMonth.now();
 		// 文字列へ変換
 		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy年 MM月");
@@ -114,16 +113,28 @@ public class MainController {
 	 */
 	@PostMapping("/main/create")
 	public String createPost(MainForm mainForm, @AuthenticationPrincipal AccountUserDetails user) {
-		Tasks task = new Tasks();
-		task.setName(user.getName());
-		task.setTitle(mainForm.getTitle());
-		task.setDate(mainForm.getDate().atTime(0,0));
-		task.setText(mainForm.getText());
-		task.setDone(mainForm.getDone());
+		Tasks t = new Tasks();
+		t.setName(user.getName());
+		t.setTitle(mainForm.getTitle());
+		t.setDate(mainForm.getDate().atTime(0,0));
+		t.setText(mainForm.getText());
+		t.setDone(false);
 
-		repo.save(task);
-		
+		repo.save(t);
+				
 		return "redirect:/main";
 	}
 
+	/**
+	 * カレンダーにタスクを表示
+	 */
+	@GetMapping("tasks.get(day)")
+	public String Posts(Model model) {
+	// public LinkedaMultiValueMap(Map<date,List<t>> otherMap) {
+		List<Tasks> task = repo.findAll();
+		model.addAttribute("tasks.get(day", task);
+		return "tasks.get(day)";
+	}
+			
+	
 }
