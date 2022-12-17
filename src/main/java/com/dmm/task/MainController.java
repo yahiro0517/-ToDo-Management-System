@@ -117,7 +117,7 @@ public class MainController {
 		Tasks task = new Tasks();
 		task.setName(user.getName());
 		task.setTitle(mainForm.getTitle());
-		task.setDate(mainForm.getDate());
+		task.setDate(mainForm.getDate().atTime(0,0));
 		task.setText(mainForm.getText());
 
 		repo.save(task);
