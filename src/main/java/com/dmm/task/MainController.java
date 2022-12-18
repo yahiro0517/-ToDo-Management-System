@@ -100,7 +100,7 @@ public class MainController {
 		if (name == "admin") {
 			list = repo.findAll();			
 		} else {
-			list = repo.findByDateBetween(12/1, 12/31, name);
+			list = repo.findByDateBetween( , , name);
 		}
 		for (Tasks t : list) {
 			tasks.add(day, t);
