@@ -26,6 +26,7 @@ public class MainController {
 	
 	@Autowired
 	private TaskRepository repo;
+	private String name;
 	
 	/**
 	 * カレンダーを作成
@@ -93,7 +94,21 @@ public class MainController {
 		// カレンダーの日付（LocalDate）とタスク情報（Tasks）とをセットでもつためのMultiValueMap
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
 		
-		model.addAttribute("tasks", tasks);
+		// タスクの追加
+		List<Tasks> list;
+		
+		if (name == "Admin") {
+			list = repo.findAll();			
+		} else {
+			list = repo.
+		}
+		for (Tasks t : list) {
+			tasks.add(day, t);
+		}
+		
+		// main.htmlの${tasks.get(day)}の ${tasks} へデータをマッピング
+		model.addAttribute("tasks", tasks);		
+		
 		return "/main";
 		
 	}
@@ -124,17 +139,4 @@ public class MainController {
 				
 		return "redirect:/main";
 	}
-
-	/**
-	 * カレンダーにタスクを表示
-	 */
-	@GetMapping("tasks.get(day)")
-	public String Posts(Model model) {
-	// public LinkedaMultiValueMap(Map<date,List<t>> otherMap) {
-		List<Tasks> task = repo.findAll();
-		model.addAttribute("tasks.get(day", task);
-		return "tasks.get(day)";
-	}
-			
-	
 }
