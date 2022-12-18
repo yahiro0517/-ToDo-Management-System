@@ -97,10 +97,10 @@ public class MainController {
 		// タスクの追加
 		List<Tasks> list;
 		
-		if (name == "Admin") {
+		if (name == "admin") {
 			list = repo.findAll();			
 		} else {
-			list = repo.
+			list = repo.findByDateBetween(12/1, 12/31, name);
 		}
 		for (Tasks t : list) {
 			tasks.add(day, t);
