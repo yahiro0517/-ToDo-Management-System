@@ -105,9 +105,7 @@ public class MainController {
 			// その月の最後の日を取得
 			int length = start.lengthOfMonth();
 			LocalDate end = start.withDayOfMonth(length);
-			System.out.println("#####");
-			System.out.println(name);
-			System.out.println("#####");
+			String name = user.getName();
 			list = repo.findByDateBetween(start.atTime(0, 0), end.atTime(0, 0), name);
 		}
 		for (Tasks t : list) {
