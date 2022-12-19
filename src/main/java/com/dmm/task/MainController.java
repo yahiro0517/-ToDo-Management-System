@@ -34,7 +34,7 @@ public class MainController {
 	 * @return 遷移先
 	 */
 	@GetMapping("/main")
-	public String main(Model model) {
+	public String main(@AuthenticationPrincipal AccountUserDetails user, Model model) {
 		// 1. 2次元表になるので、ListのListを用意する
 		List<List<LocalDate>> month = new ArrayList<>();
 		
@@ -105,6 +105,9 @@ public class MainController {
 			// その月の最後の日を取得
 			int length = start.lengthOfMonth();
 			LocalDate end = start.withDayOfMonth(length);
+			System.out.println("#####");
+			System.out.println(name);
+			System.out.println("#####");
 			list = repo.findByDateBetween(start.atTime(0, 0), end.atTime(0, 0), name);
 		}
 		for (Tasks t : list) {
@@ -117,6 +120,7 @@ public class MainController {
 		return "/main";
 		
 	}
+	
 	
 	/**
 	 * タスクの新規作成画面
@@ -145,12 +149,5 @@ public class MainController {
 		return "redirect:/main";
 	}
 	
-	/**
-	 * タスクの修正画面
-	 */
-	@GetMapping("/main/edit/{id}")
-	public String edit() {
-		
-		return "edit";
-	}
+	
 }
