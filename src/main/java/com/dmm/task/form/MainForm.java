@@ -16,5 +16,6 @@ public class MainForm {
 		private String text;
 		@DateTimeFormat(pattern = "yyyy-MM-dd")
 		private LocalDate date;
+		
 		private Boolean done;
 }
