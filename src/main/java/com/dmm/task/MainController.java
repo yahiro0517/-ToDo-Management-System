@@ -2,7 +2,6 @@ package com.dmm.task;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -102,10 +101,11 @@ public class MainController {
 			list = repo.findAll();			
 		} else {
 			// 当日のインスタンスを取得したあと、その月の1日のインスタンスを得る
-			LocalDateTime d = LocalDateTime.now().withDayOfMonth(1);
+			LocalDate start = LocalDate.now().withDayOfMonth(1);
 			// その月の最後の日を取得
-			LocalDateTime lastday = d.getMonthValue();
-			list = repo.findByDateBetween(d, lastday, name);
+			int length = start.lengthOfMonth();
+			LocalDate end = start.withDayOfMonth(length);
+			list = repo.findByDateBetween(start.atTime(0, 0), end.atTime(0, 0), name);
 		}
 		for (Tasks t : list) {
 			tasks.add(day, t);
