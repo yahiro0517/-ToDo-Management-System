@@ -96,8 +96,10 @@ public class MainController {
 		
 		// タスクの追加
 		List<Tasks> list;
-		
-		if (name == "admin") {
+		String name = user.getName();
+		String admin = "admin";
+		if (name.equals(admin)) {
+			System.out.println("適当な文字列");
 			list = repo.findAll();			
 		} else {
 			// 当日のインスタンスを取得したあと、その月の1日のインスタンスを得る
@@ -105,7 +107,9 @@ public class MainController {
 			// その月の最後の日を取得
 			int length = start.lengthOfMonth();
 			LocalDate end = start.withDayOfMonth(length);
-			String name = user.getName();
+			System.out.println("#####");
+			System.out.println(name);
+			System.out.println("#####");
 			list = repo.findByDateBetween(start.atTime(0, 0), end.atTime(0, 0), name);
 		}
 		for (Tasks t : list) {
