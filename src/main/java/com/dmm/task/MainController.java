@@ -108,7 +108,7 @@ public class MainController {
 			list = repo.findByDateBetween(start.atTime(0, 0), end.atTime(0, 0), name);
 		}
 		for (Tasks t : list) {
-			tasks.add(day, t);
+			tasks.add(t.getDate().toLocalDate(), t);
 		}
 		
 		// main.htmlの${tasks.get(day)}の ${tasks} へデータをマッピング
@@ -143,5 +143,14 @@ public class MainController {
 		repo.save(t);
 				
 		return "redirect:/main";
+	}
+	
+	/**
+	 * タスクの修正画面
+	 */
+	@GetMapping("/main/edit/{id}")
+	public String edit() {
+		
+		return "edit";
 	}
 }
