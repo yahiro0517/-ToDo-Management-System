@@ -131,7 +131,14 @@ public class MainController {
 		return "create";
 	}
 	
-	
+	/**
+	 * Edit画面
+	 */
+	@GetMapping("/main/edit/{id}")
+	public String edit() {
+		
+		return "edit";
+	}
 	
 	/**
 	 * タスクの新規作成
