@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -18,8 +17,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.dmm.task.data.entity.Tasks;
 import com.dmm.task.data.repository.TaskRepository;
@@ -102,7 +99,6 @@ public class MainController {
 		// タスクの追加
 		List<Tasks> list;
 		String name = user.getName();
-		//String admin = "admin";
 		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ROLE_ADMIN"))) {
 			System.out.println("適当な文字列");
 			list = repo.findAll();			
@@ -157,9 +153,29 @@ public class MainController {
 	/**
 	 * タスクの新規作成画面
 	 */
-	@PutMapping("/main/edit/{id}")
-	public ResponseEntity<Tasks> editTopice(@PathVariable("id") Integer id, @RequestBody MainForm mainForm, @AuthenticationPrincipal AccountUserDetails user) {
-		Tasks task = repo.updateTopic(user.getName(), mainForm.getTitle(), mainForm.getDate().atTime(0,0), mainForm.getText());
-		return "edit";
+	@PostMapping("/main/edit/{id}")
+	public String ecitPost(MainForm mainForm, @AuthenticationPrincipal AccountUserDetails user, @PathVariable Integer id) {
+		Tasks t = new Tasks();
+		t.setId(id);
+	    t.setName(user.getName());
+		t.setTitle(mainForm.getTitle());
+		t.setDate(mainForm.getDate().atTime(0,0));
+		t.setText(mainForm.getText());
+		t.setDone(mainForm.getDone());
+
+		repo.save(t);
+		
+		return "redirect:/main";
 	}
+	
+	/**
+	 * 削除ボタン作成
+	 */
+	/*
+	@PostMapping("/main/delete/{id}")
+	public String delete(@PathVariable Integer id) {
+		repo.deleteById(id);
+		return "redirect:/main";
+	}
+	*/
 }
