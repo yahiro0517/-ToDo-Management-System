@@ -8,13 +8,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.dmm.task.data.entity.Tasks;
 import com.dmm.task.data.repository.TaskRepository;
@@ -97,8 +102,8 @@ public class MainController {
 		// タスクの追加
 		List<Tasks> list;
 		String name = user.getName();
-		String admin = "admin";
-		if (name.equals(admin)) {
+		//String admin = "admin";
+		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ROLE_ADMIN"))) {
 			System.out.println("適当な文字列");
 			list = repo.findAll();			
 		} else {
@@ -107,9 +112,6 @@ public class MainController {
 			// その月の最後の日を取得
 			int length = start.lengthOfMonth();
 			LocalDate end = start.withDayOfMonth(length);
-			System.out.println("#####");
-			System.out.println(name);
-			System.out.println("#####");
 			list = repo.findByDateBetween(start.atTime(0, 0), end.atTime(0, 0), name);
 		}
 		for (Tasks t : list) {
@@ -134,6 +136,7 @@ public class MainController {
 	}
 	
 	
+	
 	/**
 	 * タスクの新規作成
 	 */
@@ -151,5 +154,12 @@ public class MainController {
 		return "redirect:/main";
 	}
 	
-	
+	/**
+	 * タスクの新規作成画面
+	 */
+	@PutMapping("/main/edit/{id}")
+	public ResponseEntity<Tasks> editTopice(@PathVariable("id") Integer id, @RequestBody MainForm mainForm, @AuthenticationPrincipal AccountUserDetails user) {
+		Tasks task = repo.updateTopic(user.getName(), mainForm.getTitle(), mainForm.getDate().atTime(0,0), mainForm.getText());
+		return "edit";
+	}
 }
