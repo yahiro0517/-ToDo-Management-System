@@ -46,6 +46,9 @@ public class MainController {
 		day = LocalDate.now();
 		day = LocalDate.of(day.getYear(), day.getMonthValue(), 1);
 		
+		model.addAttribute("prev", day.minusMonths(1));	
+		model.addAttribute("next", day.plusMonths(1));
+		
 		// 4. 曜日を表すDayOfWeekを取得し、上で取得したLocalDateに曜日の値（DayOfWeek#getValue)をマイナスして前月分のLocalDateを求め
 		DayOfWeek w = day.getDayOfWeek();
 		// マイナスして前月分のLocalDateを求める
@@ -113,8 +116,6 @@ public class MainController {
 		// main.htmlの${tasks.get(day)}の ${tasks} へデータをマッピング
 		model.addAttribute("tasks", tasks);		
 		
-		model.addAttribute("prev", day.minusMonths(1));	
-		model.addAttribute("next", day.plusMonths(1));
 		
 		return "/main";		
 	}
