@@ -28,8 +28,6 @@ public class MainController {
 	
 	@Autowired
 	private TaskRepository repo;
-	private String name;
-	
 	/**
 	 * カレンダーを作成
 	 * @param model モデル
@@ -56,8 +54,7 @@ public class MainController {
 		// 5. 1日ずつ増やしてLocalDateを求めていき、2．で作成したListへ格納していき、1週間分詰めたら1．のリストへ格納する
 		for(int i = 1; i <= 7; i++) {
 			week.add(day);
-			day = day.plusDays(1);
-			
+			day = day.plusDays(1);			
 		}
 		month.add(week);
 		week = new ArrayList<>();    // 次週分のリストを用意
@@ -100,7 +97,6 @@ public class MainController {
 		List<Tasks> list;
 		String name = user.getName();
 		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ROLE_ADMIN"))) {
-			System.out.println("適当な文字列");
 			list = repo.findAll();			
 		} else {
 			// 当日のインスタンスを取得したあと、その月の1日のインスタンスを得る
@@ -117,8 +113,10 @@ public class MainController {
 		// main.htmlの${tasks.get(day)}の ${tasks} へデータをマッピング
 		model.addAttribute("tasks", tasks);		
 		
-		return "/main";
+		model.addAttribute("prev", day.minusMonths(1));	
+		model.addAttribute("next", day.plusMonths(1));
 		
+		return "/main";		
 	}
 	
 	
@@ -135,8 +133,9 @@ public class MainController {
 	 * Edit画面
 	 */
 	@GetMapping("/main/edit/{id}")
-	public String edit() {
-		
+	public String edit(Model model, @PathVariable Integer id) {
+		Tasks task = repo.getById(id);    // 引数からidを受け取り、そのidより当該タスクを取得
+	    model.addAttribute("task", task);
 		return "edit";
 	}
 	
@@ -177,12 +176,12 @@ public class MainController {
 	
 	/**
 	 * 削除ボタン作成
+	 * 
 	 */
-	/*
+	
 	@PostMapping("/main/delete/{id}")
 	public String delete(@PathVariable Integer id) {
 		repo.deleteById(id);
 		return "redirect:/main";
-	}
-	*/
+	}	
 }
