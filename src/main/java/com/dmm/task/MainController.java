@@ -100,7 +100,12 @@ public class MainController {
 		List<Tasks> list;
 		String name = user.getName();
 		if (user.getAuthorities().stream().map(GrantedAuthority::getAuthority).anyMatch(a -> a.equals("ROLE_ADMIN"))) {
-			list = repo.findAll();			
+			// 当日のインスタンスを取得したあと、その月の1日のインスタンスを得る
+			LocalDate start = LocalDate.now().withDayOfMonth(1);
+			// その月の最後の日を取得
+			int length = start.lengthOfMonth();
+			LocalDate end = start.withDayOfMonth(length);
+			list = repo.findByDateBetween(start.atTime(0, 0), end.atTime(0, 0));			
 		} else {
 			// 当日のインスタンスを取得したあと、その月の1日のインスタンスを得る
 			LocalDate start = LocalDate.now().withDayOfMonth(1);
