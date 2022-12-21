@@ -65,6 +65,7 @@ public class MainController {
 		// 6. 2週目以降は単純に1日ずつ日を増やしながらLocalDateを求めてListへ格納していき、土曜日になったら1．のリストへ格納して新しいListを生成する（月末を求めるにはLocalDate#lengthOfMonth()を使う）
 		for(int i = 7; i <= day.lengthOfMonth(); i++) {
 			week.add(day);
+			
 			// 曜日取得
 			DayOfWeek w1 = day.getDayOfWeek();
 			// 土曜日かどうかを判定			
@@ -73,6 +74,8 @@ public class MainController {
 				week = new ArrayList<>();    // 次週分のリストを用意		
 			}
 			day = day.plusDays(1);
+			
+			System.out.println(day);
 		}
 		// 7. 最終週の翌月分をDayOfWeekの値を使って計算し、6．で生成したリストへ格納し、最後に1．で生成したリストへ格納する
 		w = day.getDayOfWeek();   // 6.まででdayを進めているので、この時点でdayには月末が入っている。
@@ -119,8 +122,7 @@ public class MainController {
 		}
 		
 		// main.htmlの${tasks.get(day)}の ${tasks} へデータをマッピング
-		model.addAttribute("tasks", tasks);		
-		
+		model.addAttribute("tasks", tasks);				
 		
 		return "/main";		
 	}
