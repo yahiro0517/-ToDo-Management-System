@@ -47,7 +47,9 @@ public class MainController {
 		if (date == null) {
 			day = LocalDate.now();
 			day = LocalDate.of(day.getYear(), day.getMonthValue(), 1);
-			date = day;
+			//date = day;
+			DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy年 MM月");
+			String ym = f.format(day);
 			
 		} else {
 			day = date; 
@@ -56,15 +58,10 @@ public class MainController {
 		model.addAttribute("prev", day.minusMonths(1));
 		model.addAttribute("next", day.plusMonths(1));
 		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy年 MM月");
-		String ym =f.format(date);
+		//String ym = f.format(date);
+		String ym = f.format(day);
 		model.addAttribute("month", ym);
 		
-		/*
-		day = LocalDate.now();
-		day = LocalDate.of(day.getYear(), day.getMonthValue(), 1);
-		model.addAttribute("prev", day.minusMonths(1));
-		model.addAttribute("next", day.plusMonths(1));
-		*/
 		
 		// 4. 曜日を表すDayOfWeekを取得し、上で取得したLocalDateに曜日の値（DayOfWeek#getValue)をマイナスして前月分のLocalDateを求め
 		DayOfWeek w = day.getDayOfWeek();
