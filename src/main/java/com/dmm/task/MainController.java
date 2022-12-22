@@ -2,12 +2,12 @@ package com.dmm.task;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -34,7 +34,7 @@ public class MainController {
 	 * @return 遷移先
 	 */
 	@GetMapping("/main")
-	public String main(@AuthenticationPrincipal AccountUserDetails user, Model model) {
+	public String main(@AuthenticationPrincipal AccountUserDetails user, Model model, @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 		// 1. 2次元表になるので、ListのListを用意する
 		List<List<LocalDate>> month = new ArrayList<>();
 		
@@ -43,11 +43,27 @@ public class MainController {
 		
 		// 3. その月の1日のLocalDateを取得
 		LocalDate day;
+		
+		if (date == null) {
+			day = LocalDate.now();
+			day = LocalDate.of(day.getYear(), day.getMonthValue(), 1);
+		} else {
+			day = date; 
+			model.addAttribute("prev", day.minusMonths(1));
+			model.addAttribute("next", day.plusMonths(1));
+			
+			DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy年 MM月");
+			String ym =f.format(date);
+			model.addAttribute("month", ym);
+		}
+		
+		
+		/*
 		day = LocalDate.now();
 		day = LocalDate.of(day.getYear(), day.getMonthValue(), 1);
-		
-		model.addAttribute("prev", day.minusMonths(1));	
+		model.addAttribute("prev", day.minusMonths(1));
 		model.addAttribute("next", day.plusMonths(1));
+		*/
 		
 		// 4. 曜日を表すDayOfWeekを取得し、上で取得したLocalDateに曜日の値（DayOfWeek#getValue)をマイナスして前月分のLocalDateを求め
 		DayOfWeek w = day.getDayOfWeek();
@@ -79,8 +95,8 @@ public class MainController {
 		
 		// 7. 最終週の翌月分をDayOfWeekの値を使って計算し、6．で生成したリストへ格納し、最後に1．で生成したリストへ格納する
 		w = day.getDayOfWeek();   // 6.まででdayを進めているので、この時点でdayには月末が入っている。
+		
 		int nextMonthDays = 7 - w.getValue();    // 1週間分の日数 7 から上記を引くと、来月分の日数になる。
-
 		for(int i = 1; i <= nextMonthDays; i++) {
 			week.add(day);
 			day = day.plusDays(1);
@@ -90,11 +106,12 @@ public class MainController {
 		model.addAttribute("matrix", month);
 		
 		// カレンダー上部の年月表示
-		YearMonth ym =YearMonth.now();
+		//YearMonth ym = YearMonth.now();
 		// 文字列へ変換
-		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy年 MM月");
-		String ym2 =f.format(ym);
-		model.addAttribute("month", ym2);
+		//DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy年 MM月");
+		//String ym2 =f.format(ym);
+		//model.addAttribute("month", ym2);
+		
 		
 		// カレンダーの日付（LocalDate）とタスク情報（Tasks）とをセットでもつためのMultiValueMap
 		MultiValueMap<LocalDate, Tasks> tasks = new LinkedMultiValueMap<LocalDate, Tasks>();
@@ -128,6 +145,7 @@ public class MainController {
 	}
 	
 	
+
 	/**
 	 * タスクの新規作成画面
 	 */
