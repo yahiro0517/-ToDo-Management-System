@@ -47,22 +47,17 @@ public class MainController {
 		if (date == null) {
 			day = LocalDate.now();
 			day = LocalDate.of(day.getYear(), day.getMonthValue(), 1);
-			
-			DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy年 MM月");
-			String ym =f.format(day);
-			model.addAttribute("month", ym);
-
+			date = day;
 			
 		} else {
 			day = date; 
-			model.addAttribute("prev", day.minusMonths(1));
-			model.addAttribute("next", day.plusMonths(1));
-			
-			DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy年 MM月");
-			String ym =f.format(date);
-			model.addAttribute("month", ym);
 		}
 		
+		model.addAttribute("prev", day.minusMonths(1));
+		model.addAttribute("next", day.plusMonths(1));
+		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy年 MM月");
+		String ym =f.format(date);
+		model.addAttribute("month", ym);
 		
 		/*
 		day = LocalDate.now();
