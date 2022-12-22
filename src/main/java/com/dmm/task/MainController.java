@@ -47,6 +47,12 @@ public class MainController {
 		if (date == null) {
 			day = LocalDate.now();
 			day = LocalDate.of(day.getYear(), day.getMonthValue(), 1);
+			
+			DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy年 MM月");
+			String ym =f.format(day);
+			model.addAttribute("month", ym);
+
+			
 		} else {
 			day = date; 
 			model.addAttribute("prev", day.minusMonths(1));
