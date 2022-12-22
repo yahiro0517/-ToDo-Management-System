@@ -76,8 +76,14 @@ public class MainController {
 		month.add(week);
 		week = new ArrayList<>();    // 次週分のリストを用意
 		
+		// 2週目（2週目から月末まで）
+		int leftOfMonth = day.lengthOfMonth() - day.getDayOfMonth();  // ①1週目の当月分
+		leftOfMonth = day.lengthOfMonth() - leftOfMonth;  //②当月の全日数から①を引く
+		leftOfMonth = 7 - leftOfMonth;   // ③int i = 7を考慮した追加日数
+		
 		// 6. 2週目以降は単純に1日ずつ日を増やしながらLocalDateを求めてListへ格納していき、土曜日になったら1．のリストへ格納して新しいListを生成する（月末を求めるにはLocalDate#lengthOfMonth()を使う）
-		for(int i = 7; i <= day.lengthOfMonth(); i++) {
+		for(int i = 7; i <= day.lengthOfMonth() + leftOfMonth; i++) {    // ③int i = 7を考慮した追加日数
+
 			week.add(day);
 			
 			// 曜日取得
@@ -87,7 +93,7 @@ public class MainController {
 				month.add(week);
 				week = new ArrayList<>();    // 次週分のリストを用意		
 			}
-			day = day.plusDays(1);
+			day = day.plusDays(1);	
 			
 		}
 		
@@ -95,14 +101,15 @@ public class MainController {
 		w = day.getDayOfWeek();   // 6.まででdayを進めているので、この時点でdayには月末が入っている。
 		
 		int nextMonthDays = 7 - w.getValue();    // 1週間分の日数 7 から上記を引くと、来月分の日数になる。
+
 		for(int i = 1; i <= nextMonthDays; i++) {
 			week.add(day);
 			day = day.plusDays(1);
 		}
 		month.add(week);
-		
+
 		model.addAttribute("matrix", month);
-		
+
 		// カレンダー上部の年月表示
 		//YearMonth ym = YearMonth.now();
 		// 文字列へ変換
